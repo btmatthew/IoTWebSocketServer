@@ -13,7 +13,9 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import com.IOTWebSocketServer.database.DatabaseManager;
 import com.IOTWebSocketServer.model.Message;
+
 
 @ServerEndpoint(value = "/iot/{deviceID}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class IOTEndpoint {
@@ -34,22 +36,26 @@ public class IOTEndpoint {
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
-        System.out.println(message.getFrom());
-        System.out.println(message.getTo());
-        System.out.println(message.getAction());
-        System.out.println(message.getHandlerID());
-        System.out.println(message.getDeviceDescription());
-        System.out.println(message.getUserName());
-        System.out.println(message.getPassword());
+//        System.out.println(message.getFrom());
+//        System.out.println(message.getTo());
+//        System.out.println(message.getAction());
+//        System.out.println(message.getHandlerID());
+//        System.out.println(message.getDeviceDescription());
+//        System.out.println(message.getUserEmail());
+//        System.out.println(message.getPassword());
 
         switch(message.getAction()){
             case "registerNewDevice":
+                int deviceID = 0;
+                DatabaseManager databaseManager = new DatabaseManager();
+                if(databaseManager.authenticateUser(message.getUserEmail(),message.getPassword())){
+                    int userID = databaseManager.getUserID(message.getUserEmail());
+                    deviceID = databaseManager.registerNewDevice(message.getDeviceType(),message.getDeviceDescription(),userID);
+                }
                 Message replyMessage = new Message();
                 replyMessage.setAction("deviceRegistrationCompleted");
-                replyMessage.setDeviceID("espLamp1");
+                replyMessage.setDeviceID(String.valueOf(deviceID));
                 session.getBasicRemote().sendObject(replyMessage);
-                //DatabaseManager databaseManager = new DatabaseManager();
-
                 break;
         }
 
