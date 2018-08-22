@@ -1,7 +1,10 @@
 package com.IOTWebSocketServer.database;
 
 
+import com.IOTWebSocketServer.token.RandomString;
+
 import java.sql.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DevicesDatabaseManager extends DatabaseManager {
 
@@ -100,29 +103,32 @@ public class DevicesDatabaseManager extends DatabaseManager {
         return userID;
     }
 
-    public float registerNewDevice(String deviceType,String deviceDescription, int userID) {
-        float deviceID=0;
+    public String registerNewDevice(String deviceType,String deviceDescription, int userID) {
+        String deviceID="";
         Connection conn = getConnection();
         String query = "INSERT INTO Devices (idDevices,deviceType,deviceDescription,userID) " +
                 "VALUES (?,?,?,?)";
+        RandomString gen = new RandomString(20, ThreadLocalRandom.current());
         PreparedStatement preparedStatement = null;
         try {
-            deviceID = System.currentTimeMillis();
+            String tempDeviceID = gen.nextString();
             preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setFloat(1,deviceID);
+            preparedStatement.setString(1,tempDeviceID);
             preparedStatement.setString(2, deviceType);
             preparedStatement.setString(3, deviceDescription);
             preparedStatement.setInt(4, userID);
-            preparedStatement.executeUpdate();
+            int i = preparedStatement.executeUpdate();
+
+            if (i > 0) {
+                deviceID = tempDeviceID;
+            } else {
+                deviceID = "databaseError";
+            }
             preparedStatement.close();
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("deivceID "+ deviceID);
         return deviceID;
     }
-
-
-
 }

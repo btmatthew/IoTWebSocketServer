@@ -104,11 +104,11 @@ public class Message {
         this.lampStatus = lampStatus;
     }
 
-    public String getToken() {
+    public String getUserToken() {
         return userToken;
     }
 
-    public void setToken(String userToken) {
+    public void setUserToken(String userToken) {
         this.userToken = userToken;
     }
 

@@ -26,12 +26,12 @@ public class IOTEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("deviceID") String deviceID) throws IOException, EncodeException {
-        System.out.println("New Device Connected " + deviceID );
+        System.out.println("New Device Connected " + deviceID);
         DevicesDatabaseManager databaseManager = new DevicesDatabaseManager();
-        if(databaseManager.authenticateDevice(deviceID)
+        if (databaseManager.authenticateDevice(deviceID)
                 || deviceID.contains("newDevice")
                 || databaseManager.authenticateServer(deviceID)) {
-            System.out.println("Device authenticated "+ deviceID);
+            System.out.println("Device authenticated " + deviceID);
             this.session = session;
             iotEndpoints.add(this);
             devices.put(session.getId(), deviceID);
@@ -42,15 +42,15 @@ public class IOTEndpoint {
 
     @OnMessage
     public void onMessage(Session session, Message message) throws IOException, EncodeException {
-        System.out.println(message.getFrom());
-        System.out.println(message.getTo());
-        System.out.println(message.getAction());
-        System.out.println(message.getHandlerID());
-        System.out.println(message.getDeviceDescription());
-        System.out.println(message.getUserName());
-        System.out.println(message.getToken());
-        System.out.println(message.getUserEmail());
-        System.out.println(message.getPassword());
+        System.out.println("from " + message.getFrom());
+        System.out.println("to " + message.getTo());
+        System.out.println("action " + message.getAction());
+        System.out.println("handlerID " + message.getHandlerID());
+        System.out.println("device description " + message.getDeviceDescription());
+        System.out.println("user name " + message.getUserName());
+        System.out.println("token " + message.getUserToken());
+        System.out.println("user name " + message.getUserEmail());
+        System.out.println("password " + message.getPassword());
         DevicesDatabaseManager databaseManager = new DevicesDatabaseManager();
         Message replyMessage = new Message();
         switch (message.getAction()) {
@@ -59,30 +59,42 @@ public class IOTEndpoint {
                 //The system will have to authenticate the user first
                 //if the details are correct the device will be registered on the system
                 //otherwise the system will reply back to the system to inform that incorrect user details were provided.
-                if (databaseManager.authenticateUser(message.getUserName(), message.getToken())) {
+                if (databaseManager.authenticateUser(message.getUserName(), message.getUserToken())) {
                     int userID = databaseManager.getUserID(message.getUserName());
-                    float deviceID = databaseManager.registerNewDevice(message.getDeviceType(), message.getDeviceDescription(), userID);
+                    String deviceID = databaseManager.registerNewDevice(message.getDeviceType(), message.getDeviceDescription(), userID);
+                    if (!deviceID.equals("databaseError")) {
+                        replyMessage.setAction("deviceRegistrationCompleted");
+                        replyMessage.setDeviceID(String.valueOf(deviceID));
+                        session.getBasicRemote().sendObject(replyMessage);
+                    } else {
+                        replyMessage.setAction("databaseError");
+                        session.getBasicRemote().sendObject(replyMessage);
+                    }
 
-                    replyMessage.setAction("deviceRegistrationCompleted");
-                    replyMessage.setDeviceID(String.valueOf(deviceID));
-                    session.getBasicRemote().sendObject(replyMessage);
                 } else {
                     replyMessage.setAction("registrationUnsuccessful");
                     session.getBasicRemote().sendObject(replyMessage);
                 }
                 break;
             case "lampStatus":
-                if (databaseManager.authenticateUser(message.getUserName(), message.getToken())) {
+            case "lampOn":
+            case "lampOff":
+                if (databaseManager.authenticateUser(message.getUserName(), message.getUserToken())) {
                     IOTEndpoint io = getSession(message.getTo());
                     if (io != null) {
+                        //purging data from packet so it can be reused
+                        message.setUserName("");
+                        message.setUserToken("");
                         io.session.getBasicRemote().sendObject(message);
                     } else {
+
                         replyMessage = message;
                         replyMessage.setAction("deviceNotConnectedToSystem");
                         session.getBasicRemote().sendObject(replyMessage);
                     }
                 }
                 break;
+
 
         }
 
