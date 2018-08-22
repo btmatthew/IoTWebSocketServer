@@ -1,19 +1,20 @@
-package com.IOTWebSocketServer.websocket;
+package com.IOTWebSocketServer.websocket.UserCommunication;
+
+import com.IOTWebSocketServer.model.Message;
+import com.IOTWebSocketServer.model.User;
+import com.google.gson.Gson;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-import com.IOTWebSocketServer.model.Message;
-import com.google.gson.Gson;
-
-public class MessageEncoder implements Encoder.Text<Message> {
+public class UserEncoder implements Encoder.Text<User> {
 
     private static Gson gson = new Gson();
 
     @Override
-    public String encode(Message message) throws EncodeException {
-        String json = gson.toJson(message);
+    public String encode(User user) throws EncodeException {
+        String json = gson.toJson(user);
         return json;
     }
 
@@ -26,4 +27,6 @@ public class MessageEncoder implements Encoder.Text<Message> {
     public void destroy() {
         // Close resources
     }
+
+
 }

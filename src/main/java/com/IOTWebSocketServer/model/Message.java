@@ -7,11 +7,16 @@ public class Message {
     //used to identify the session's handler
     private String handlerID;
 
+    private String userName;
     private String userEmail;
     private String password;
+    private String userToken;
+
     private String deviceDescription;
     private String deviceID;
     private String deviceType;
+
+    private String lampStatus;
 
     @Override
     public String toString() {
@@ -88,5 +93,30 @@ public class Message {
 
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
+    }
+
+
+    public String getLampStatus() {
+        return lampStatus;
+    }
+
+    public void setLampStatus(String lampStatus) {
+        this.lampStatus = lampStatus;
+    }
+
+    public String getToken() {
+        return userToken;
+    }
+
+    public void setToken(String userToken) {
+        this.userToken = userToken;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

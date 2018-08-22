@@ -1,4 +1,4 @@
-package com.IOTWebSocketServer.websocket;
+package com.IOTWebSocketServer.websocket.IOTCommunication;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
