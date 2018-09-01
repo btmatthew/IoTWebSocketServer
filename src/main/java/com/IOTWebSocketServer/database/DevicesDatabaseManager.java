@@ -1,9 +1,11 @@
 package com.IOTWebSocketServer.database;
 
 
+import com.IOTWebSocketServer.model.Message;
 import com.IOTWebSocketServer.token.RandomString;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DevicesDatabaseManager extends DatabaseManager {
@@ -56,8 +58,6 @@ public class DevicesDatabaseManager extends DatabaseManager {
         }
         return serverAutentication;
     }
-
-
 
     public boolean authenticateDevice(String deviceId) {
         boolean deviceAuthentication = false;
@@ -131,4 +131,28 @@ public class DevicesDatabaseManager extends DatabaseManager {
         }
         return deviceID;
     }
+
+    public ArrayList<Message> getDeviceList(int userID) {
+        ArrayList<Message> deviceList = new ArrayList<>();
+        Connection conn = getConnection();
+        String sql ="SELECT idDevices,deviceType,deviceDescription FROM Devices WHERE userID = ?";
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                Message device = new Message();
+                device.setDeviceID(rs.getString(1));
+                device.setDeviceType(rs.getString(2));
+                device.setDeviceDescription(rs.getString(3));
+                deviceList.add(device);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deviceList;
+    }
+
+
 }

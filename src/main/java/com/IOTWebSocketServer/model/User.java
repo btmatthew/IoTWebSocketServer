@@ -8,12 +8,18 @@ public class User {
     private String userEmail;
     private String password;
     private String userName;
-    private String token;
+    private String userToken;
 
     public User(String userEmail, String password, String userName) {
         this.userEmail = userEmail;
         this.password = password;
         this.userName = userName;
+    }
+
+    public void purgeConfidentialData(){
+        this.password="";
+        this.userEmail="";
+        this.userID=-1;
     }
 
     public int getUserID() {
@@ -48,12 +54,12 @@ public class User {
         this.userName = userName;
     }
 
-    public String getToken() {
-        return token;
+    public String getUserToken() {
+        return userToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
     }
 
     public String getAction() {

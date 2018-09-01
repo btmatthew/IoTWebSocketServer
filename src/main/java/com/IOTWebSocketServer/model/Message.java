@@ -1,5 +1,7 @@
 package com.IOTWebSocketServer.model;
 
+import java.util.ArrayList;
+
 public class Message {
     private String from;
     private String to;
@@ -17,6 +19,12 @@ public class Message {
     private String deviceType;
 
     private String lampStatus;
+    private ArrayList<Message> deviceList;
+
+    public void purgeUserData(){
+        this.userName="";
+        this.userToken="";
+    }
 
     @Override
     public String toString() {
@@ -118,5 +126,13 @@ public class Message {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public ArrayList<Message> getDeviceList() {
+        return deviceList;
+    }
+
+    public void setDeviceList(ArrayList<Message> deviceList) {
+        this.deviceList = deviceList;
     }
 }

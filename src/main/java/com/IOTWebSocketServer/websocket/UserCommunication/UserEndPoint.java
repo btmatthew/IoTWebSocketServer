@@ -37,25 +37,19 @@ public class UserEndPoint {
         System.out.println(user.getPassword());
         System.out.println(user.getUserEmail());
         System.out.println(user.getAction());
-        System.out.println(user.getToken());
+        System.out.println(user.getUserToken());
         System.out.println(user.getUserID());
         switch (user.getAction()) {
             case "registerUser":
-                boolean isEmailUsed = userDatabaseManager.checkIfEmailUsed(user.getUserEmail());
-                boolean isUserNameUsed = userDatabaseManager.checkIfUserNameIsTaken(user.getUserName());
-                if (isEmailUsed) {
-                    user.setAction("EmailAddressAlreadyUsed");
-                } else if (isUserNameUsed) {
-                    user.setAction("UserNameAlreadyUsed");
-                } else {
-                    String token = userDatabaseManager.registerUser(user);
-                    if (token.equals("databaseError")) {
-                        user.setAction(token);
-                    } else {
-                        user.setAction("RegistrationSuccessful");
-                        user.setToken(token);
-                    }
-                }
+                user = userDatabaseManager.registerUser(user);
+                session.getBasicRemote().sendObject(user);
+                session.close();
+                break;
+            case "userLogin":
+                System.out.println(user.getUserEmail());
+                System.out.println(user.getPassword());
+                System.out.println(user.getAction());
+                user = userDatabaseManager.userLogin(user);
                 session.getBasicRemote().sendObject(user);
                 session.close();
                 break;

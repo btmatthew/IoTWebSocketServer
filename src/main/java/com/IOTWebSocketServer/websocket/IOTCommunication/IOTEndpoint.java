@@ -31,7 +31,6 @@ public class IOTEndpoint {
         if (databaseManager.authenticateDevice(deviceID)
                 || deviceID.contains("newDevice")
                 || databaseManager.authenticateServer(deviceID)) {
-            System.out.println("Device authenticated " + deviceID);
             this.session = session;
             iotEndpoints.add(this);
             devices.put(session.getId(), deviceID);
@@ -53,9 +52,21 @@ public class IOTEndpoint {
         System.out.println("password " + message.getPassword());
         DevicesDatabaseManager databaseManager = new DevicesDatabaseManager();
         Message replyMessage = new Message();
+
         switch (message.getAction()) {
+            case "requestDevicesList":
+                if (databaseManager.authenticateUser(message.getUserName(), message.getUserToken())) {
+                    int userID = databaseManager.getUserID(message.getUserName());
+                    ArrayList<Message> deviceList = databaseManager.getDeviceList(userID);
+                    message.setAction("deviceList");
+                    message.setDeviceList(deviceList);
+                    session.getBasicRemote().sendObject(message);
+                } else {
+                    replyMessage.setAction("IncorrectCredentials");
+                    session.getBasicRemote().sendObject(replyMessage);
+                }
+                break;
             case "registerNewDevice":
-                System.out.println("Device registration started " + message.getUserName());
                 //The system will have to authenticate the user first
                 //if the details are correct the device will be registered on the system
                 //otherwise the system will reply back to the system to inform that incorrect user details were provided.
@@ -70,7 +81,6 @@ public class IOTEndpoint {
                         replyMessage.setAction("databaseError");
                         session.getBasicRemote().sendObject(replyMessage);
                     }
-
                 } else {
                     replyMessage.setAction("registrationUnsuccessful");
                     session.getBasicRemote().sendObject(replyMessage);
@@ -87,11 +97,13 @@ public class IOTEndpoint {
                         message.setUserToken("");
                         io.session.getBasicRemote().sendObject(message);
                     } else {
-
                         replyMessage = message;
                         replyMessage.setAction("deviceNotConnectedToSystem");
                         session.getBasicRemote().sendObject(replyMessage);
                     }
+                }else{
+                    replyMessage.setAction("IncorrectCredentials");
+                    session.getBasicRemote().sendObject(replyMessage);
                 }
                 break;
 
