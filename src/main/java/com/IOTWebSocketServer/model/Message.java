@@ -21,6 +21,9 @@ public class Message {
     private String lampStatus;
     private ArrayList<Message> deviceList;
 
+    private int fanOption;
+    private FanParameters fanParameters;
+
     public void purgeUserData(){
         this.userName="";
         this.userToken="";
@@ -134,5 +137,21 @@ public class Message {
 
     public void setDeviceList(ArrayList<Message> deviceList) {
         this.deviceList = deviceList;
+    }
+
+    public int getFanOption() {
+        return fanOption;
+    }
+
+    public void setFanOption(int fanOption) {
+        this.fanOption = fanOption;
+    }
+
+    public FanParameters getFanParameters() {
+        return fanParameters;
+    }
+
+    public void setFanParameters(FanParameters fanParameters) {
+        this.fanParameters = fanParameters;
     }
 }

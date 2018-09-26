@@ -33,22 +33,21 @@ public class UserEndPoint {
     @OnMessage
     public void onMessage(Session session, User user) throws IOException, EncodeException {
         UserDatabaseManager userDatabaseManager = new UserDatabaseManager();
-        System.out.println(user.getUserName());
-        System.out.println(user.getPassword());
-        System.out.println(user.getUserEmail());
-        System.out.println(user.getAction());
-        System.out.println(user.getUserToken());
-        System.out.println(user.getUserID());
+//        System.out.println(user.getUserName());
+//        System.out.println(user.getPassword());
+//        System.out.println(user.getUserEmail());
+//        System.out.println(user.getAction());
+//        System.out.println(user.getUserToken());
+//        System.out.println(user.getUserID());
         switch (user.getAction()) {
             case "registerUser":
+                System.out.printf("new user registered %s", user.getUserName());
                 user = userDatabaseManager.registerUser(user);
                 session.getBasicRemote().sendObject(user);
                 session.close();
                 break;
             case "userLogin":
-                System.out.println(user.getUserEmail());
-                System.out.println(user.getPassword());
-                System.out.println(user.getAction());
+                System.out.printf("User %s logged in",user.getUserName());
                 user = userDatabaseManager.userLogin(user);
                 session.getBasicRemote().sendObject(user);
                 session.close();
@@ -59,7 +58,7 @@ public class UserEndPoint {
 
     @OnClose
     public void onClose(Session session) throws IOException, EncodeException {
-
+        System.out.printf("session %s closed", session.getId());
     }
 
     @OnError

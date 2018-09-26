@@ -25,7 +25,6 @@ public class DevicesDatabaseManager extends DatabaseManager {
             ResultSet rs = stmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
-            System.out.println("email count is "+count);
             stmt.close();
             conn.close();
             userAuthentication = count == 1;
@@ -34,6 +33,23 @@ public class DevicesDatabaseManager extends DatabaseManager {
             e.printStackTrace();
         }
         return userAuthentication;
+    }
+
+    public void removeDeviceFromSystem(String deviceID){
+        Connection conn = getConnection();
+        String sql ="DELETE FROM Devices WHERE idDevices = ?";
+        PreparedStatement stmt = null;
+        try {
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, deviceID);
+            stmt.executeUpdate();
+            stmt.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean authenticateServer(String serverID) {
@@ -70,7 +86,6 @@ public class DevicesDatabaseManager extends DatabaseManager {
             ResultSet rs = stmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
-            System.out.println("email count is "+count);
             stmt.close();
             conn.close();
             deviceAuthentication = count == 1;
@@ -101,6 +116,34 @@ public class DevicesDatabaseManager extends DatabaseManager {
             e.printStackTrace();
         }
         return userID;
+    }
+
+    public String updateDeviceName(Message message){
+        String actionOutcome="";
+        Connection conn = getConnection();
+        String query = "update Devices set deviceDescription = ? where idDevices = ?";
+
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, message.getDeviceDescription());
+            preparedStatement.setString(2,message.getFrom());
+
+            int i = preparedStatement.executeUpdate();
+
+            if (i > 0) {
+                actionOutcome = "deviceNameUpdated";
+            } else {
+                actionOutcome = "databaseError";
+            }
+            preparedStatement.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return  actionOutcome;
     }
 
     public String registerNewDevice(String deviceType,String deviceDescription, int userID) {

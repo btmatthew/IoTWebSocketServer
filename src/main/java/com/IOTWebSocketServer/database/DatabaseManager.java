@@ -14,9 +14,9 @@ public class DatabaseManager {
 
     public DatabaseManager() {
 
-        this.DB_URL = "jdbc:mysql://192.168.1.6:3306/IOT?useSSL=false";
-        this.USER = "iotadmin";
-        this.PASS = "Iotpassword123.";
+        this.DB_URL = "jdbc:mysql://localhost:3306/IOT?useSSL=false";
+        this.USER = "";
+        this.PASS = "";
     }
 
     protected Connection getConnection() {
