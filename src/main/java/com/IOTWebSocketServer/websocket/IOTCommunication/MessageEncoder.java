@@ -13,8 +13,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
 
     @Override
     public String encode(Message message) throws EncodeException {
-        String json = gson.toJson(message);
-        return json;
+        return gson.toJson(message);
     }
 
     @Override

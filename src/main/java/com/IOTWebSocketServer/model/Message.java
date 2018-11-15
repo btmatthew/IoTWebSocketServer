@@ -22,11 +22,60 @@ public class Message {
     private ArrayList<Message> deviceList;
 
     private int fanOption;
-    private FanParameters fanParameters;
+    private boolean fanStatus;
+    private int fanSpeed;
+    private int fanMode;
+    private boolean rotation;
+    private boolean ion;
 
-    public void purgeUserData(){
-        this.userName="";
-        this.userToken="";
+    private boolean tvStatus;
+
+    private float humidity;
+    private float temperature;
+
+    public void purgeUserData() {
+        this.userName = "";
+        this.userToken = "";
+    }
+
+    public boolean isFanStatus() {
+        return fanStatus;
+    }
+
+    public void setFanStatus(boolean fanStatus) {
+        this.fanStatus = fanStatus;
+    }
+
+    public int getFanSpeed() {
+        return fanSpeed;
+    }
+
+    public void setFanSpeed(int fanSpeed) {
+        this.fanSpeed = fanSpeed;
+    }
+
+    public int getFanMode() {
+        return fanMode;
+    }
+
+    public void setFanMode(int fanMode) {
+        this.fanMode = fanMode;
+    }
+
+    public boolean isRotation() {
+        return rotation;
+    }
+
+    public void setRotation(boolean rotation) {
+        this.rotation = rotation;
+    }
+
+    public boolean isIon() {
+        return ion;
+    }
+
+    public void setIon(boolean ion) {
+        this.ion = ion;
     }
 
     @Override
@@ -147,11 +196,27 @@ public class Message {
         this.fanOption = fanOption;
     }
 
-    public FanParameters getFanParameters() {
-        return fanParameters;
+    public boolean isTvStatus() {
+        return tvStatus;
     }
 
-    public void setFanParameters(FanParameters fanParameters) {
-        this.fanParameters = fanParameters;
+    public void setTvStatus(boolean tvStatus) {
+        this.tvStatus = tvStatus;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(float humidity) {
+        this.humidity = humidity;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
     }
 }

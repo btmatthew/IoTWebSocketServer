@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DevicesDatabaseManager extends DatabaseManager {
 
 
-    public boolean authenticateUser(String userName, String userToken) {
+    public boolean authenticateUser(Message message) {
 
         boolean userAuthentication = false;
 
@@ -20,8 +20,8 @@ public class DevicesDatabaseManager extends DatabaseManager {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, userName);
-            stmt.setString(2, userToken);
+            stmt.setString(1, message.getUserName());
+            stmt.setString(2, message.getUserToken());
             ResultSet rs = stmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
@@ -99,7 +99,7 @@ public class DevicesDatabaseManager extends DatabaseManager {
     }
 
 
-    public int getUserID(String userName) {
+    public int getUserID(Message message) {
         int userID=0;
 
         Connection conn = getConnection();
@@ -107,7 +107,7 @@ public class DevicesDatabaseManager extends DatabaseManager {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, userName);
+            stmt.setString(1, message.getUserName());
             ResultSet rs = stmt.executeQuery();
             rs.next();
             userID = rs.getInt(1);
