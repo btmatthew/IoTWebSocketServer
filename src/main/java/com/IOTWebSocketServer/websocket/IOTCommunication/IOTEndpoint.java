@@ -114,6 +114,7 @@ public class IOTEndpoint {
 //            case "lampon":
 //            case "lampoff":
 //            case "remoteaction":
+//            case "deviceStatus":
             default:
                 if (databaseManager.authenticateUser(message)) {
                     replySession(message);
