@@ -32,6 +32,14 @@ public class IOTEndpoint {
                 || deviceID.contains("newDevice")
                 || databaseManager.authenticateServer(deviceID)) {
             System.out.printf("Session created and authenticated %s\n", session.getId());
+            //remove any zombie sessions.
+            if (iotEndpoints.stream()
+                    .anyMatch(x -> deviceID.equals(x.sessionDeviceID))) {
+                IOTEndpoint tobeRemoved = getSession(deviceID);
+                if(tobeRemoved!=null) {
+                    iotEndpoints.remove(tobeRemoved);
+                }
+            }
             this.session = session;
             iotEndpoints.add(this);
             devices.put(session.getId(), deviceID);
@@ -133,16 +141,18 @@ public class IOTEndpoint {
     @OnClose
     public void onClose(Session session) {
         System.out.printf("session %s closed for device %s\n", session.getId(), sessionDeviceID);
-        System.out.printf("number of sessions left %d ", iotEndpoints.size());
+        System.out.printf("number of sessions left %d \n", iotEndpoints.size());
         iotEndpoints.remove(this);
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        // Do error handling here
+        System.out.printf("session %s closed for device %s because of an error\n", session.getId(), sessionDeviceID);
+        System.out.printf("number of sessions left %d \n", iotEndpoints.size());
+        iotEndpoints.remove(this);
     }
 
-    public void replySession(Message message) {
+    private void replySession(Message message) {
         IOTEndpoint io = getSession(message.getTo());
         try {
             if (io != null) {
@@ -159,9 +169,7 @@ public class IOTEndpoint {
                         message.getTo());
                 message.purgeUserData();
                 message.setAction("deviceNotConnectedToSystem");
-
                 session.getBasicRemote().sendObject(message);
-
             }
         } catch (IOException | EncodeException e) {
             e.printStackTrace();
@@ -170,17 +178,10 @@ public class IOTEndpoint {
 
     private static IOTEndpoint getSession(String deviceId) {
         System.out.println("searching for session");
-        final IOTEndpoint[] iotEndpoint = {null};
-        iotEndpoints.forEach(endpoint -> {
-            synchronized (iotEndpoints) {
-                if (Objects.equals(endpoint.sessionDeviceID, deviceId)) {
-                    if(endpoint.session.isOpen()){
-                        iotEndpoint[0] = endpoint;
-                    }
-                }
-            }
-        });
-        return iotEndpoint[0];
+        return iotEndpoints
+                .stream()
+                .filter(x -> deviceId.equals(x.sessionDeviceID))
+                .findAny()
+                .orElse(null);
     }
-
 }

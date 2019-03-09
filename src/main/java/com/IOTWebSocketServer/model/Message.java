@@ -19,6 +19,14 @@ public class Message {
     private String deviceType;
 
     private String lampStatus;
+    /*
+     * 0 means AllRelays
+     * 1 means relay 1
+     * 2 means relay 2
+     * 3 means relay 3
+     */
+    private String relayID;
+
     private ArrayList<Message> deviceList;
 
     private int fanOption;
@@ -228,5 +236,13 @@ public class Message {
 
     public void setTempSensorStatus(String tempSensorStatus) {
         this.tempSensorStatus = tempSensorStatus;
+    }
+
+    public String getRelayID() {
+        return relayID;
+    }
+
+    public void setRelayID(String relayID) {
+        this.relayID = relayID;
     }
 }

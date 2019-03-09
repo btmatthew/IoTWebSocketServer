@@ -197,5 +197,27 @@ public class DevicesDatabaseManager extends DatabaseManager {
         return deviceList;
     }
 
+//    public ArrayList<Message> getDeviceGroup(String groupID) {
+//        ArrayList<Message> deviceList = new ArrayList<>();
+//        Connection conn = getConnection();
+//        String sql ="SELECT idDevices,deviceType,deviceDescription FROM Devices WHERE userID = ?";
+//        PreparedStatement stmt = null;
+//        try {
+//            stmt = conn.prepareStatement(sql);
+//            stmt.setInt(1, userID);
+//            ResultSet rs = stmt.executeQuery();
+//            while(rs.next()){
+//                Message device = new Message();
+//                device.setDeviceID(rs.getString(1));
+//                device.setDeviceType(rs.getString(2));
+//                device.setDeviceDescription(rs.getString(3));
+//                deviceList.add(device);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return deviceList;
+//    }
+
 
 }
